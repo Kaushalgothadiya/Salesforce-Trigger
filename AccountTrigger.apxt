@@ -1,0 +1,25 @@
+//what is trigger? -> trigger is piece of code which will be executed on dml
+//
+//How many trigger we can create per object? -> as much as you want BUT best practice is One Trigger per Object.
+//
+//why not to write logic in trigger?
+//1. loose coupling/decoupling-> maintainability, scalability, reusability
+//2. DRY - Do not Repeat yourself
+//3. can not set sharing
+//
+////check the IsParent checkbox if Parent Account is null on Account
+trigger AccountTrigger on Account (before insert,after insert,after update) {
+    if(Trigger.isInsert){
+        if(Trigger.isBefore){
+            AccountTriggerHandler.accountBeforeInsert(Trigger.new);
+            system.debug('isbefore is running......');
+        }
+        if(Trigger.isAfter){
+             AccountTriggerHandler.accountAfterUpdate(Trigger.new);
+            system.debug('isafter is running........');
+       
+    }
+    } 
+   
+    
+    }
