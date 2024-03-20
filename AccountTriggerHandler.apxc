@@ -1,0 +1,86 @@
+public class AccountTriggerHandler {
+    //this method will be called on account before insert
+    public static void accountBeforeInsert(List<Account> lstAcc){
+        updateParentCheckbox(lstAcc);
+        changeShippingAddress(lstAcc);
+        
+       
+    }
+    //this method will be called on account after update
+    public static void accountAfterUpdate(List<Account> lstAcc){
+        //updateOpportunity(lstAcc);
+       	insertOpportunity(lstAcc);
+        insertcontacts(lstAcc);
+    }
+    
+
+    
+    //this method will check parentId on account record on basis of parentId
+    private static void updateParentCheckbox(List<Account> lstAcc){
+        for(Account acc : lstAcc){
+            if(acc.ParentId == null){
+                acc.Is_Parent__c = true;
+                System.debug('Parent ACC');
+            }else{
+                System.debug('Child ACC');
+            }
+        }
+    }
+    private static void changeShippingAddress(List<Account> lstacc){
+		
+        for(Account acc:lstAcc){
+            if(acc.BillingStreet!=null){
+                acc.ShippingStreet=acc.BillingStreet;
+            }
+            if(acc.BillingCity!=null){
+                acc.ShippingCity=acc.BillingCity;
+            }
+            if(acc.BillingPostalCode!=null){
+                acc.ShippingPostalCode=acc.BillingPostalCode;
+            }
+            if(acc.BillingState!=null){
+                acc.ShippingState=acc.BillingState;
+            }
+            if(acc.BillingCountry!=null){
+                acc.ShippingCountry=acc.BillingCountry;
+            }
+        }
+    }
+    
+    // Method for change opportunity related to account
+    private static void updateOpportunity(List<Account> lstAcc){
+        
+    }
+    
+    //method for creating opportunity repsect to accounts.
+    public static void insertOpportunity(List<Account> lstAcc){
+        List<opportunity> oppList=[select id from opportunity];
+        map<id,opportunity> mapopp=new map<id,opportunity>(oppList);
+        system.debug('map of opportunity is :'+mapopp);
+        List<Opportunity> oppToBeInserted=new List<Opportunity>();
+        for(Account acc:lstAcc){
+            opportunity opp=new opportunity();
+            opp.Name=acc.Name;
+            opp.AccountId=acc.Id;
+            opp.StageName='prospecting';
+            opp.CloseDate=system.today();
+            oppToBeInserted.add(opp);
+            system.debug('function is running.......');
+        }
+    }
+    
+    // Insert the contact related to the Account:
+    
+    public static void insertcontacts(List<Account> lstAcc){
+        List<Contact> contactList=new List<Contact>();
+        for(Account acc:lstAcc){
+            Contact con=new Contact();
+            con.lastname='Manish';
+            con.AccountId=acc.Id;
+            contactList.add(con);
+        }
+        insert contactList;
+    }
+    
+
+}
